@@ -52,7 +52,7 @@ exports.createPost = (req, res) => {
 
 
 exports.findUser = (req, res) => {
-    const name = req.params.name;
+    const name = req.params.email;
     const password = req.body.password;
 
     users.findAll({ where: { name: name, password: password } })

@@ -23,7 +23,7 @@ app.get("/", (req, res) => {
 
 
 app.post("/CreateUser", controller.createUser);
-app.get("/CheckUser/:name", controller.findUser);
+app.get("/CheckUser/:email", controller.findUser);
 
 app.post("/CreatePost/:id", controller.createPost);
 app.get("/AllPostsByUser/:id", controller.findAllPostsByUserId);
