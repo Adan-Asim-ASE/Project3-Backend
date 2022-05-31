@@ -20,5 +20,6 @@ module.exports = (sequelize, Sequelize) => {
       }
     }
   });
+  
   return users;
 };

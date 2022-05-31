@@ -29,9 +29,10 @@ exports.findUser = (req, res) => {
   const email = req.params.email;
   const password = req.body.password;
 
-  console.log(req.body);
+  console.log(req.body.password);
   users.findOne({ where: { email: email, password: password } })
     .then((user) => {
+      console.log(user);
       if (user!= undefined) {
         res.send(user);
       }
