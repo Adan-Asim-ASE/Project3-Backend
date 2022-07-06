@@ -17,6 +17,8 @@ exports.createUser = (req, res) => {
   users.create(user)
     .then((user) => {
       res.send(user);
+      req.session.user = user;
+      req.session.save();
     })
     .catch((err) => {
       res.status(500).send({
@@ -29,12 +31,13 @@ exports.findUser = (req, res) => {
   const email = req.params.email;
   const password = req.body.password;
 
-  console.log(req.body.password);
   users.findOne({ where: { email: email, password: password } })
     .then((user) => {
-      console.log(user);
-      if (user!= undefined) {
+      console.log(req.session);
+      if (user != undefined) {
         res.send(user);
+        req.session.user = user;
+        req.session.save();
       }
       else {
         res.status(404).send({
@@ -48,3 +51,17 @@ exports.findUser = (req, res) => {
       });
     });
 };
+
+exports.logoutUser = (req, res) => {
+  req.session.destroy();
+
+  if (req.session == undefined) {
+    res.send("Logout Successfull");
+  }
+  else {
+    res.status(500).send({
+      message: "Error: already loggedout"
+    });
+  }
+
+}
