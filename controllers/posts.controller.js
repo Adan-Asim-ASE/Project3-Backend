@@ -159,3 +159,4 @@ exports.UpdatePost = (req, res) => {
       res.status(500).send({ message: "Error in updating given post" });
     });
 }
+
