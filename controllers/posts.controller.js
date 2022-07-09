@@ -9,17 +9,15 @@ exports.createPost = (req, res) => {
     });
     return;
   }
-  if ((req.session==undefined || req.session.user==undefined)) {
-    res.status(400).send({
-      message: "Please login first!"
-    });
-    return;
-  }
+  
+  const {user} = req.user;
+  id = user.id;
+
   const post = {
     title: req.body.title,
     content: req.body.content,
     published: req.body.published,
-    userId: req.session.user.id,
+    userId: id,
   }
   posts.create(post)
     .then((post) => {
@@ -32,15 +30,11 @@ exports.createPost = (req, res) => {
     });
 };
 
+exports.findPostsByUserId = (req, res) => {
 
-exports.findAllPostsByUserId = (req, res) => {
-  if ((req.session==undefined || req.session.user==undefined)) {
-    res.status(400).send({
-      message: "Please login first!"
-    });
-    return;
-  }
-  const id = req.session.user.id;
+  const {user} = req.user;
+  id = user.id;
+
   posts.findAll({ where: { userId: id } })
     .then((post) => {
       if (post) {
@@ -60,13 +54,10 @@ exports.findAllPostsByUserId = (req, res) => {
 };
 
 exports.findPublishedPostsByUserId = (req, res) => {
-  if ((req.session==undefined || req.session.user==undefined)) {
-    res.status(400).send({
-      message: "Please login first"
-    });
-    return;
-  }
-  const id = req.session.user.id;
+
+  const {user} = req.user;
+  id = user.id;
+
   posts.findAll({ where: { userId: id, published: true } })
     .then((post) => {
       if (post) {
@@ -86,13 +77,10 @@ exports.findPublishedPostsByUserId = (req, res) => {
 };
 
 exports.findDraftedPostsByUserId = (req, res) => {
-  if ((req.session==undefined || req.session.user==undefined)) {
-    res.status(400).send({
-      message: "Please login first"
-    });
-    return;
-  }
-  const id = req.session.user.id;
+
+  const {user} = req.user;
+  id = user.id;
+
   posts.findAll({ where: { userId: id, published: false } })
     .then((post) => {
       if (post) {
@@ -114,12 +102,7 @@ exports.findDraftedPostsByUserId = (req, res) => {
 
 exports.DeletePost = (req, res) => {
   const pid = req.body.postId;
-  if ((req.session==undefined || req.session.user==undefined)) {
-    res.status(400).send({
-      message: "Please login first"
-    });
-    return;
-  }
+  
   posts.destroy({ where: { id: pid } })
     .then((post) => {
       if (post == 1) {
@@ -140,12 +123,7 @@ exports.DeletePost = (req, res) => {
 
 exports.UpdatePost = (req, res) => {
   const pid = req.body.postId;
-  if ((req.session==undefined || req.session.user==undefined)) {
-    res.status(400).send({
-      message: "Please login first"
-    });
-    return;
-  }
+  
   posts.update(req.body, { where: { id: pid } })
     .then(num => {
       if (num == 1) {

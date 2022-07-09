@@ -1,5 +1,6 @@
 const { password } = require("pg/lib/defaults");
 const db = require("../models");
+const jwt = require("jsonwebtoken");
 const users = db.users;
 
 exports.createUser = (req, res) => {
@@ -16,9 +17,8 @@ exports.createUser = (req, res) => {
   }
   users.create(user)
     .then((user) => {
-      res.send(user);
-      req.session.user = user;
-      req.session.save();
+      const accessToken = jwt.sign({ user: user}, process.env.TOKEN_SECRET_KEY, { expiresIn: '1h' });
+      res.json({accessToken});
     })
     .catch((err) => {
       res.status(500).send({
@@ -33,11 +33,9 @@ exports.findUser = (req, res) => {
 
   users.findOne({ where: { email: email, password: password } })
     .then((user) => {
-      console.log(req.session);
       if (user != undefined) {
-        res.send(user);
-        req.session.user = user;
-        req.session.save();
+        const accessToken = jwt.sign({ user: user}, process.env.TOKEN_SECRET_KEY, { expiresIn: '1h' });
+        res.json({accessToken});
       }
       else {
         res.status(404).send({
@@ -52,16 +50,3 @@ exports.findUser = (req, res) => {
     });
 };
 
-exports.logoutUser = (req, res) => {
-  req.session.destroy();
-
-  if (req.session == undefined) {
-    res.send("Logout Successfull");
-  }
-  else {
-    res.status(500).send({
-      message: "Error: already loggedout"
-    });
-  }
-
-}
