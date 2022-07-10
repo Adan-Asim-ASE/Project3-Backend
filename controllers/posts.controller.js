@@ -76,6 +76,27 @@ exports.findPublishedPostsByUserId = (req, res) => {
     });
 };
 
+exports.findAllPublishedPosts = (req, res) => {
+
+  posts.findAll({ where: { published: true } })
+    .then((posts) => {
+      if (posts) {
+        res.send(posts);
+      }
+      else {
+        res.status(404).send({
+          message: 'Cannot find any published post'
+        });
+      }
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: "Error retrieving posts"
+      });
+    });
+};
+
+
 exports.findDraftedPostsByUserId = (req, res) => {
 
   const {user} = req.user;
