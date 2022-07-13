@@ -4,8 +4,8 @@ const jwt = require("jsonwebtoken");
 const users = db.users;
 
 exports.createUser = (req, res) => {
-  if ((!req.body)) {
-    req.status(400).send({
+  if ((!req.body || !req.body.name || !req.body.email || !req.body.password)) {
+    res.status(400).send({
       message: "User cannot be empty"
     });
     return;

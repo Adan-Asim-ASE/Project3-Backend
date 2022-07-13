@@ -3,8 +3,8 @@ const db = require("../models");
 const posts = db.posts;
 
 exports.createPost = (req, res) => {
-  if ((!req.body)) {
-    req.status(400).send({
+  if ((!req.body || !req.body.title || !req.body.content )) {
+    res.status(400).send({
       message: "Post cannot be empty"
     });
     return;
@@ -19,6 +19,7 @@ exports.createPost = (req, res) => {
     published: req.body.published,
     userId: id,
   }
+
   posts.create(post)
     .then((post) => {
       res.send(post);
