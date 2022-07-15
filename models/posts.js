@@ -14,13 +14,22 @@ module.exports = (sequelize, DataTypes) => {
   }
 
   posts.init({
-    title: DataTypes.STRING,
-    content: DataTypes.STRING,
-    published: DataTypes.BOOLEAN
-  }, 
-  {
-    sequelize,
-    modelName: 'posts',
-  });
+    title: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    content: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    published: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+    }
+  },
+    {
+      sequelize,
+      modelName: 'posts',
+    });
   return posts;
 };

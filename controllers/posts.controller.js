@@ -1,15 +1,9 @@
 const { password } = require("pg/lib/defaults");
 const db = require("../models");
+const { body, validationResult } = require('express-validator');
 const posts = db.posts;
 
 exports.createPost = (req, res) => {
-  if ((!req.body || !req.body.title || !req.body.content )) {
-    res.status(400).send({
-      message: "Post cannot be empty"
-    });
-    return;
-  }
-  
   const {user} = req.user;
   id = user.id;
 
@@ -22,10 +16,10 @@ exports.createPost = (req, res) => {
 
   posts.create(post)
     .then((post) => {
-      res.send(post);
+      res.status(200).json(post);
     })
     .catch((err) => {
-      res.status(500).send({
+      res.status(500).json({
         message: err.message || "Some error occurred"
       });
     });
@@ -39,17 +33,17 @@ exports.findPostsByUserId = (req, res) => {
   posts.findAll({ where: { userId: id } })
     .then((post) => {
       if (post) {
-        res.send(post);
+        res.status(200).json(post);
       }
       else {
-        res.status(404).send({
-          message: 'Cannot find any post with UserId=' + id
+        res.status(404).json({
+          message: 'Cannot find any post'
         });
       }
     })
     .catch((err) => {
-      res.status(500).send({
-        message: "Error retrieving posts with Userid=" + id
+      res.status(500).json({
+        message: "Error retrieving posts"
       });
     });
 };
@@ -62,17 +56,17 @@ exports.findPublishedPostsByUserId = (req, res) => {
   posts.findAll({ where: { userId: id, published: true } })
     .then((post) => {
       if (post) {
-        res.send(post);
+        res.status(200).json(post);
       }
       else {
-        res.status(404).send({
-          message: 'Cannot find any published post by User No: ' + id
+        res.status(404).json({
+          message: 'Cannot find any published post'
         });
       }
     })
     .catch((err) => {
-      res.status(500).send({
-        message: "Error retrieving posts with Userid=" + id
+      res.status(500).json({
+        message: "Error retrieving posts"
       });
     });
 };
@@ -82,16 +76,16 @@ exports.findAllPublishedPosts = (req, res) => {
   posts.findAll({ where: { published: true } })
     .then((posts) => {
       if (posts) {
-        res.send(posts);
+        res.status(200).json(posts);
       }
       else {
-        res.status(404).send({
+        res.status(404).json({
           message: 'Cannot find any published post'
         });
       }
     })
     .catch((err) => {
-      res.status(500).send({
+      res.status(500).json({
         message: "Error retrieving posts"
       });
     });
@@ -106,57 +100,57 @@ exports.findDraftedPostsByUserId = (req, res) => {
   posts.findAll({ where: { userId: id, published: false } })
     .then((post) => {
       if (post) {
-        res.send(post);
+        res.status(200).json(post);
       }
       else {
-        res.status(404).send({
-          message: 'Cannot find any drafted post with by User No: ' + id
+        res.status(404).json({
+          message: 'Cannot find any drafted post'
         });
       }
     })
     .catch((err) => {
-      res.status(500).send({
-        message: "Error retrieving posts with Userid=" + id
+      res.status(500).json({
+        message: "Error retrieving posts"
       });
     });
 };
 
 
-exports.DeletePost = (req, res) => {
-  const pid = req.body.postId;
+exports.deletePost = (req, res) => {
+  const pid = req.params.postId;
   
   posts.destroy({ where: { id: pid } })
     .then((post) => {
       if (post == 1) {
-        res.send("Post deleted successfully");
+        res.status(200).json("Post deleted successfully");
       }
       else {
-        res.status(404).send({
-          message: 'Cannot find any post with id= ' + pid
+        res.status(404).json({
+          message: 'Cannot find post specified to delete'
         });
       }
     })
     .catch((err) => {
-      res.status(500).send({
-        message: "Error retrieving posts with id= " + pid
+      res.status(500).json({
+        message: "Some error occurred in deleting post"
       });
     });
 };
 
-exports.UpdatePost = (req, res) => {
-  const pid = req.body.postId;
+exports.updatePost = (req, res) => {
+  const pid = req.params.postId;
   
   posts.update(req.body, { where: { id: pid } })
     .then(num => {
       if (num == 1) {
-        res.send({ message: "Post updated Successfully" });
+        res.status(200).json({ message: "Post updated Successfully" });
       }
       else {
-        res.send({ message: "Cannot update post with given id" });
+        res.status(404).json({ message: "Cannot update specified post" });
       }
     })
     .catch(err => {
-      res.status(500).send({ message: "Error in updating given post" });
+      res.status(500).json({ message: "Some error occurred in updating post" });
     });
 }
 

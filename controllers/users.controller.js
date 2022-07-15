@@ -1,51 +1,81 @@
 const { password } = require("pg/lib/defaults");
 const db = require("../models");
 const jwt = require("jsonwebtoken");
+const { body, validationResult } = require('express-validator');
+var argon2 = require('argon2');
 const users = db.users;
 
-exports.createUser = (req, res) => {
-  if ((!req.body || !req.body.name || !req.body.email || !req.body.password)) {
-    res.status(400).send({
-      message: "User cannot be empty"
-    });
-    return;
-  }
-  const user = {
-    name: req.body.name,
-    email: req.body.email,
-    password: req.body.password,
-  }
-  users.create(user)
-    .then((user) => {
-      const accessToken = jwt.sign({ user: user}, process.env.TOKEN_SECRET_KEY, { expiresIn: '1h' });
-      res.json({accessToken});
-    })
-    .catch((err) => {
-      res.status(500).send({
-        message: err.message || "Some error occurred"
-      });
-    });
-};
+generateToken = (user) => {
+  const accessToken = jwt.sign({ user: user }, process.env.TOKEN_SECRET_KEY, { expiresIn: '1h' });
+  return accessToken;
+}
 
-exports.findUser = (req, res) => {
+
+exports.createUser = (req, res) => {
+
+  users.findOne({ where: { email: req.body.email } })
+    .then((user) => {
+      if (user != undefined) {
+        res.status(404).json({
+          message: "Email already exists"
+        });
+      }
+      else {
+        argon2.hash(req.body.password)
+          .then(hash => {
+            const user = {
+              name: req.body.name,
+              email: req.body.email,
+              password: hash,
+            }
+            users.create(user)
+              .then((user) => {
+                const accessToken = generateToken(user);
+                res.status(200).json({ accessToken });
+              })
+              .catch((err) => {
+                res.status(500).json({
+                  message: err.message || "Something went wrong"
+                });
+              });
+          });
+      }
+    })
+}
+
+exports.checkUser = (req, res) => {
   const email = req.params.email;
   const password = req.body.password;
 
-  users.findOne({ where: { email: email, password: password } })
+  users.findOne({ where: { email: email } })
     .then((user) => {
       if (user != undefined) {
-        const accessToken = jwt.sign({ user: user}, process.env.TOKEN_SECRET_KEY, { expiresIn: '1h' });
-        res.json({accessToken});
+        argon2.verify(user.password, password)
+          .then(match => {
+            if (match == true) {
+              const accessToken = generateToken(user);
+              res.status(200).json({ accessToken });
+            }
+            else{
+              res.status(404).json({
+                message: "Invalid email or password"
+              });
+            }
+          }).catch(() => {
+            res.status(404).json({
+              message: "Invalid email or password"
+            });
+          });
       }
       else {
-        res.status(404).send({
-          message: "Cannot find user with email=" + email + " and password=" + password
+        res.status(404).json({
+          message: "Invalid email or password"
         });
       }
     })
     .catch((err) => {
-      res.status(500).send({
-        message: "Error retrieving user with email=" + email + " and password=" + password
+      res.status(500).json({
+        message: "Something went wrong"
       });
     });
 };

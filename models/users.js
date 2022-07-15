@@ -6,13 +6,24 @@ module.exports = (sequelize, DataTypes) => {
   class users extends Model {
 
     static associate(models) {
+      users.hasMany(models.posts);
     }
   }
 
   users.init({
-    name: DataTypes.STRING,
-    password: DataTypes.STRING,
-    email: DataTypes.STRING
+    name: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    password: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    email: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      unique: true
+    },
   },
     {
       sequelize,

@@ -17,6 +17,8 @@
   },
   "homepage": "https://github.com/Adan-Asim-ASE/Project3-backend#readme",
   "dependencies": {
+    "argon2": "^0.28.7",
+    "argon2-ffi": "^2.0.0",
     "bcrypt": "^5.0.1",
     "body-parser": "^1.20.0",
     "connect-redis": "^6.1.3",
