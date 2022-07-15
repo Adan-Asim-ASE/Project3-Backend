@@ -25,7 +25,11 @@ module.exports = (sequelize, DataTypes) => {
     published: {
       type: DataTypes.BOOLEAN,
       allowNull: false,
-    }
+    },
+    userName: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
   },
     {
       sequelize,

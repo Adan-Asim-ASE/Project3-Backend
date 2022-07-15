@@ -6,12 +6,14 @@ const posts = db.posts;
 exports.createPost = (req, res) => {
   const {user} = req.user;
   id = user.id;
+  userName = user.name;
 
   const post = {
     title: req.body.title,
     content: req.body.content,
     published: req.body.published,
     userId: id,
+    userName: userName,
   }
 
   posts.create(post)
