@@ -1,22 +1,18 @@
 const { password } = require("pg/lib/defaults");
 const db = require("../models");
-const jwt = require("jsonwebtoken");
 const { body, validationResult } = require('express-validator');
+const { generateToken } = require('../utils/generateToken');
+
+
 var argon2 = require('argon2');
 const users = db.users;
-
-generateToken = (user) => {
-  const accessToken = jwt.sign({ user: user }, process.env.TOKEN_SECRET_KEY, { expiresIn: '1h' });
-  return accessToken;
-}
-
 
 exports.createUser = (req, res) => {
 
   users.findOne({ where: { email: req.body.email } })
     .then((user) => {
       if (user != undefined) {
-        res.status(404).json({
+        res.status(400).json({
           message: "Email already exists"
         });
       }
@@ -43,8 +39,8 @@ exports.createUser = (req, res) => {
     })
 }
 
-exports.checkUser = (req, res) => {
-  const email = req.params.email;
+exports.userLogin = (req, res) => {
+  const email = req.body.email;
   const password = req.body.password;
 
   users.findOne({ where: { email: email } })
@@ -56,14 +52,14 @@ exports.checkUser = (req, res) => {
               const accessToken = generateToken(user);
               res.status(200).json({ accessToken });
             }
-            else{
-              res.status(404).json({
+            else {
+              res.status(400).json({
                 message: "Invalid email or password"
               });
             }
-          }).catch(() => {
+          }).catch((err) => {
             res.status(404).json({
-              message: "Invalid email or password"
+              message: "Something went wrong " + err
             });
           });
       }

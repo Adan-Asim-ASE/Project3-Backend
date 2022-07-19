@@ -36,7 +36,7 @@ exports.validateCreateUser = [
   },
 ];
 
-exports.validateCheckUser = [
+exports.validateUserLogin = [
   check('password')
     .not()
     .isEmpty()

@@ -7,10 +7,7 @@ const app = express();
 const db = require("./models");
 const posts = require('./routes/posts.routes');
 const users = require('./routes/users.routes');
-
-
-
-
+// db.sequelize.sync({ force: true }).then(() => { console.log( "Drop and re-sync db.");}); 
 var corsOptions = {
   origin: process.env.CORS_ORIGIN
 };

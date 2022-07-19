@@ -38,7 +38,7 @@ exports.findPostsByUserId = (req, res) => {
         res.status(200).json(post);
       }
       else {
-        res.status(404).json({
+        res.status(200).json({
           message: 'Cannot find any post'
         });
       }
@@ -61,7 +61,7 @@ exports.findPublishedPostsByUserId = (req, res) => {
         res.status(200).json(post);
       }
       else {
-        res.status(404).json({
+        res.status(200).json({
           message: 'Cannot find any published post'
         });
       }
@@ -81,7 +81,7 @@ exports.findAllPublishedPosts = (req, res) => {
         res.status(200).json(posts);
       }
       else {
-        res.status(404).json({
+        res.status(200).json({
           message: 'Cannot find any published post'
         });
       }
@@ -105,7 +105,7 @@ exports.findDraftedPostsByUserId = (req, res) => {
         res.status(200).json(post);
       }
       else {
-        res.status(404).json({
+        res.status(200).json({
           message: 'Cannot find any drafted post'
         });
       }
@@ -141,7 +141,8 @@ exports.deletePost = (req, res) => {
 
 exports.updatePost = (req, res) => {
   const pid = req.params.postId;
-  
+  console.log(req.body);
+
   posts.update(req.body, { where: { id: pid } })
     .then(num => {
       if (num == 1) {

@@ -4,7 +4,7 @@ const controller = require("../controllers/users.controller.js");
 const userValidators = require("../validators/userValidators")
 
 
-router.post("/", userValidators.validateCreateUser,controller.createUser);
-router.post("/:email", userValidators.validateCheckUser,controller.checkUser);
+router.post("/", userValidators.validateCreateUser, controller.createUser);
+router.post("/login", userValidators.validateUserLogin, controller.userLogin);
 
 module.exports = router
