@@ -38,9 +38,7 @@ exports.findPostsByUserId = (req, res) => {
         res.status(200).json(post);
       }
       else {
-        res.status(200).json({
-          message: 'Cannot find any post'
-        });
+        res.status(200).json(post);
       }
     })
     .catch((err) => {
@@ -61,9 +59,7 @@ exports.findPublishedPostsByUserId = (req, res) => {
         res.status(200).json(post);
       }
       else {
-        res.status(200).json({
-          message: 'Cannot find any published post'
-        });
+        res.status(200).json(post);
       }
     })
     .catch((err) => {
@@ -81,9 +77,7 @@ exports.findAllPublishedPosts = (req, res) => {
         res.status(200).json(posts);
       }
       else {
-        res.status(200).json({
-          message: 'Cannot find any published post'
-        });
+        res.status(200).json(posts);
       }
     })
     .catch((err) => {
@@ -105,9 +99,7 @@ exports.findDraftedPostsByUserId = (req, res) => {
         res.status(200).json(post);
       }
       else {
-        res.status(200).json({
-          message: 'Cannot find any drafted post'
-        });
+        res.status(200).json(post);
       }
     })
     .catch((err) => {
