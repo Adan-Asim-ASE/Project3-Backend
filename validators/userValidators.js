@@ -28,10 +28,10 @@ exports.validateCreateUser = [
     .isLength({ min: 1 })
     .withMessage('Minimum 1 character required!')
     .bail(),
+  // eslint-disable-next-line consistent-return
   (req, res, next) => {
     const errors = validationResult(req);
-    if (!errors.isEmpty())
-      return res.status(422).json({ errors: errors.array() });
+    if (!errors.isEmpty()) { return res.status(422).json({ errors: errors.array() }); }
     next();
   },
 ];
@@ -45,10 +45,10 @@ exports.validateUserLogin = [
     .isLength({ min: 1 })
     .withMessage('Minimum 1 characters required!')
     .bail(),
+  // eslint-disable-next-line consistent-return
   (req, res, next) => {
     const errors = validationResult(req);
-    if (!errors.isEmpty())
-      return res.status(422).json({ errors: errors.array() });
+    if (!errors.isEmpty()) { return res.status(422).json({ errors: errors.array() }); }
     next();
   },
 ];

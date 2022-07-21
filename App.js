@@ -1,15 +1,13 @@
 require('dotenv').config();
-const jwt = require("jsonwebtoken");
-const express = require("express");
-const bodyParser = require("body-parser");
-const cors = require("cors");
+const express = require('express');
+const cors = require('cors');
+
 const app = express();
-const db = require("./models");
 const posts = require('./routes/posts.routes');
 const users = require('./routes/users.routes');
-// db.sequelize.sync({ force: true }).then(() => { console.log( "Drop and re-sync db.");}); 
-var corsOptions = {
-  origin: process.env.CORS_ORIGIN
+// db.sequelize.sync({ force: true }).then(() => { console.log( "Drop and re-sync db.");});
+const corsOptions = {
+  origin: process.env.CORS_ORIGIN,
 };
 
 app.use(cors(corsOptions));
@@ -23,4 +21,3 @@ const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}.`);
 });
-
